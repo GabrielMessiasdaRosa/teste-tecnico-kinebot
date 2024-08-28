@@ -1,3 +1,60 @@
+services:
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "4000:4000"
+    volumes:
+      - ./web:/app
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - frontend
+      - backend
+      - mysql-db
+
+  mysql-db:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: reimagined_spork
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: password
+    restart: always
+    expose:
+      - "3306"
+    volumes:
+      - ./reimagined-spork-msql-data:/var/lib/mysql
+      - ./init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
+
+  backend:
+    build: ./api
+    environment:
+      DB_HOST: mysql-db
+      DB_USER: user
+      DB_PASSWORD: password
+      DB_NAME: reimagined_spork
+    depends_on:
+      - mysql-db
+    links:
+      - mysql-db
+    volumes:
+      - ./api:/app
+
+  frontend:
+    build: ./web
+    volumes:
+      - ./web:/app
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: mysql-db
+      PMA_USER: "user"
+      PMA_PASSWORD: "password"
+    ports:
+      - "8080:80"
+    depends_on:
+      - mysql-db
 # version: "3"
 
 # services:
@@ -26,31 +83,3 @@
 
 # volumes:
 #   reimagined-spork:
-
-version: "3"
-
-services:
-  mysql:
-    image: mysql:8.0
-    command: --default-authentication-plugin=mysql_native_password
-    environment:
-      MYSQL_DATABASE: reimagined_spork
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
-      MYSQL_ROOT_PASSWORD: password
-    restart: always
-    networks:
-      - net_app
-    ports:
-      - "3306:3306"
-    expose:
-      - "3306"
-    volumes:
-      - reimagined-spork:/var/lib/mysql
-
-networks:
-  net_app:
-    driver: bridge
-
-volumes:
-  reimagined-spork:
