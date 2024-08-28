@@ -1,17 +1,23 @@
 # reimagined-spork
 
-Technical aptitude test
+Technical aptitude test Kinebot
 
-Required: Node version v14.15.0
+Required: Docker and Docker Compose installed
 
-Base directory
-web
-Build command
-yarn build
-Publish directory
-web/build
-Build status
-Active
+To run the project, execute the following command in the root directory:
 
-docker-compose up --build
-bash scripts/startup.sh
+```bash
+docker-compose up || docker-compose up -d # to run in background
+```
+
+Frontend available at:
+
+- http://localhost/
+
+Available endpoints:
+
+- GET http://localhost:4000/api/heroes
+
+Utils
+
+- phpMyAdmin http://localhost:8080

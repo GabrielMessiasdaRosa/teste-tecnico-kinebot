@@ -1,13 +1,13 @@
-import "./App.css";
-
-// const API = process.env.REACT_APP_ENDPOINT;
+import HeroesList from "./components/heroes-list";
+import { useHeroesContext } from "./contexts/heroes-context";
+import "./index.css";
 
 function App() {
+  const { heroes } = useHeroesContext();
   return (
-    <div className="App">
-      <h2>Heroes</h2>
-      <button>Fetch</button>
-    </div>
+    <main className="flex items-center justify-center">
+      <HeroesList data={heroes} />
+    </main>
   );
 }
 
